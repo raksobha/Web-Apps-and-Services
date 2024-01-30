@@ -1,0 +1,193 @@
+<style>
+    table {
+        margin: 0 auto; /* Center the table */
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #1b6d85;
+        color: white;
+    }
+    th:first-child{
+        border-radius: 0 0 0 8px;
+    }
+    th:last-child{
+        border-radius: 0 8px 0 0;
+    }
+    td{
+        padding-top: 10px;
+        padding-bottom: 10px;
+
+    }
+    td:first-child{
+        border-radius: 0 0 0 8px;
+    }
+    td:last-child{
+        border-radius: 0 8px 0 0;
+    }
+    tr:nth-child(even) {
+        background-color: #e7e7e7;
+    }
+    .homeBlock{
+        width:80%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+    h6{
+        padding-top: 10px;
+    }
+    .option {
+        width: 70%;
+        height: 90%;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .choicebutton button {
+        width: 98%;
+        height: 100%;
+        background-color: #d75c5c;
+        text-align: center;
+        color: white;
+        border-color: #171010;
+        border-radius: 5px;
+        border-style: solid;
+        font-size: 15px;
+        padding-bottom: 4px;
+
+    }
+    .payaccept{
+        display: inline;
+        width: 100%;
+        height: 90%;
+        color: #1b6d85;
+    }
+    .rejectbutton button {
+        display: inline;
+        width: 40%;
+        height: 100%;
+        background-color: #d75c5c;
+        text-align: center;
+        color: white;
+        border-color: #171010;
+        border-radius: 5px;
+        border-style: solid;
+        font-size: 15px;
+        padding-bottom: 4px;
+    }
+    .paybutton button {
+        display: inline;
+        width: 40%;
+        height: 100%;
+        background-color: #d75c5c;
+        text-align: center;
+        color: white;
+        border-color: #171010;
+        border-radius: 5px;
+        border-style: solid;
+        font-size: 15px;
+        padding-bottom: 4px;
+    }
+    .tdclass{
+        text-align: center;
+    }
+    a{
+        text-decoration: none !important;
+    }
+
+</style>
+{% extends 'main/base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="homeBlock">
+        {% if user.is_authenticated %}
+            <h1>Notifications</h1>
+            <div>
+                <h5>User <em>{{user.username}}</em> notifications:</h5>
+                {% if new_notifications|length > 0 %}
+                    <br>
+                    <h6>You have : {{ new_notifications|length }} new notifications</h6>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for notification in new_notifications %}
+                            <tr>
+                            {%  if notification.type_of_transaction  == 'request' %}
+                                <td>You requested a payment of {{ notification.amount }} from {{ notification.other_user }} </td>
+                                <td> {{ notification.time_of_notification }}</td>
+                                <td>
+                                    <div class="option">
+                                        <a class="choicebutton" href={% url 'seen_notification' notif_id=notification.id %}><button>Mark as read</button></a>
+                                    </div>
+                                </td>
+                            {%  elif notification.type_of_transaction  == 'requested' %}
+                                <td>{{ notification.other_user }} {{ notification.type_of_transaction }} {{ notification.amount }}</td>
+                                <td> {{ notification.time_of_notification }}</td>
+                                <td class="tdclass">
+                                    <div class="payaccept">
+                                        <a class="rejectbutton" href={% url 'reject_payment' notif_id=notification.id %}><button>Reject</button></a>
+                                        <a class="paybutton" href={% url 'make_payment' notif_id=notification.id %}><button >Pay</button></a>
+                                    </div>
+                                </td>
+                            {%  else  %}
+                                <td>{{ notification.other_user }} {{ notification.type_of_transaction }} {{ notification.amount }}</td>
+                                <td> {{ notification.time_of_notification }}</td>
+                                <td>
+                                    <div class="option">
+                                        <a class="choicebutton" href={% url 'seen_notification' notif_id=notification.id %}><button>Mark as read</button></a>
+                                    </div>
+                                </td>
+                            {%  endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <h6>There are no new notfications for user: <em>{{user.username}}</em>.</h6>
+                {% endif %}
+            </div>
+
+
+            <div>
+                {% if old_notifications|length > 0 %}
+                    <br>
+                    <h6>You have : {{ old_notifications|length }} old notifications</h6>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for notification in old_notifications %}
+                            <tr>
+                                {%  if notification.type_of_transaction  == 'request' %}
+                                    <td>You requested a payment of {{ notification.amount }} {{ account_bal.currency }} from {{ notification.other_user }} on</td>
+                                    <td> {{ notification.time_of_notification }}</td>
+                                {%  elif notification.type_of_transaction  == 'requested' %}
+                                    <td>{{ notification.other_user }} {{ notification.type_of_transaction }} a payment of {{ notification.amount }} {{ account_bal.currency }} on</td>
+                                    <td> {{ notification.time_of_notification }}</td>
+                                {%  else  %}
+                                    <td>{{ notification.other_user }} {{ notification.type_of_transaction }} the payment of {{ notification.amount }} {{ account_bal.currency }}</td>
+                                    <td> {{ notification.time_of_notification }}</td>
+                                {%  endif %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <h5>There are no old notfications for user: <em>{{user.username}}</em>.</h5>
+                {% endif %}
+            </div>
+        {% else %}
+
+        {% endif %}
+    </div>
+{% endblock %}

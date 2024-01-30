@@ -1,0 +1,46 @@
+<style>
+    .loginBlock{
+        margin-left:auto;
+        margin-right:auto;
+    }
+    .form-group{
+        position: relative;
+        width: 50%;
+        margin-left:auto;
+        margin-right:auto;
+        margin-top: 60px;
+    }
+    .btn-center{
+        display: flex;
+        justify-content: center;
+    }
+    .btn{
+        width: 100px;
+    }
+    .text-center{
+        padding-top: 80px;
+    }
+    h1{
+        font-family: Gadugi "JetBrains Mono ExtraBold" ;
+        color: #1b6d85;
+        text-align: center;
+        padding-top: 30px;
+    }
+</style>
+{% extends 'main/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="loginBlock">
+        <h1>Login to account</h1>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ login_user|crispy }}
+            <div class="btn-center"><button type="submit" class="btn btn-success">Login</button></div>
+            <p class="text-center">Don't have an account? <a href="{% url 'signup' %}">Create an account</a>.</p>
+        </form>
+    </div>
+{% endblock %}

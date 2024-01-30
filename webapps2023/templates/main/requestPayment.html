@@ -1,0 +1,37 @@
+<style>
+    .container{
+        text-align: center;
+        padding-top: 20px;
+    }
+    form{
+        position: relative;
+        width: 30%;
+        margin-left:auto;
+        margin-right:auto;
+        margin-top: 10px;
+    }
+    label{
+        margin-top: 10px;
+    }
+    button{
+        width: 100px;
+    }
+</style>
+{% extends 'main/base.html' %}
+
+{% block title %}
+    Request Payment
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <h2>Request Money</h2>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ request_form|crispy }}
+            <button type="submit" class="btn btn-success">Send</button>
+        </form>
+    </div>
+{% endblock %}

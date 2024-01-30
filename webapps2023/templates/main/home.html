@@ -1,0 +1,62 @@
+<style>
+    .homeBlock{
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+    .option {
+        margin-top: 30px;
+        width: 300px;
+        height: 50px;
+        margin-right: auto;
+        margin-left: auto;
+    }
+    .choicebutton button {
+        width: 98%;
+        height: 50px;
+        background-color: #1b6d85;
+        text-align: center;
+        color: white;
+        border-color: #1b6d85;
+        border-radius: 5px;
+        border-style: solid;
+        font-size: 21px;
+        padding-bottom: 4px;
+
+    }
+    h1, h2{
+        font-family: Gadugi "JetBrains Mono ExtraBold" ;
+        color: #1b6d85;
+        text-align: center;
+        padding-top: 30px;
+    }
+</style>
+{% extends 'main/base.html' %}
+
+{% block title %}Homepage{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="homeBlock">
+        {% if user.is_authenticated %}
+            <h1>Welcome {{user.username}}</h1>
+            <h2>Choose an Option</h2>
+            <div class="option">
+                <a class="choicebutton" href="{% url 'transactions' %}"><button >Transactions</button></a>
+            </div>
+            <div class="option">
+                <a class="choicebutton" href="{% url 'make_payment' notif_id=0 %}"><button>Make a payment</button></a>
+            </div>
+            <div class="option">
+                <a class="choicebutton" href="{% url 'request_payment' %}"><button>Request a payment</button></a>
+            </div>
+            <div class="option">
+                <a class="choicebutton" href="{% url 'notifications' %}"><button>Notifications</button></a>
+            </div>
+        {% else %}
+
+        {% endif %}
+    </div>
+{% endblock %}

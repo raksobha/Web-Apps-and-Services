@@ -1,0 +1,98 @@
+<style>
+    table {
+        margin: 0 auto; /* Center the table */
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #1b6d85;
+        color: white;
+    }
+    th:first-child{
+        border-radius: 0 0 0 8px;
+    }
+    th:last-child{
+        border-radius: 0 8px 0 0;
+    }
+    td:first-child{
+        border-radius: 0 0 0 8px;
+    }
+    td:last-child{
+        border-radius: 0 8px 0 0;
+    }
+    tr:nth-child(even) {
+        background-color: #e7e7e7;
+    }
+    .homeBlock{
+        width:80%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+</style>
+{% extends 'main/base.html' %}
+
+{% block title %}Transactions{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="homeBlock">
+        {% if user.is_authenticated %}
+            <div class="transactiondiv">
+                <h1>Transactions</h1>
+            </div>
+            <div>
+                {% if past_transactions|length > 0 %}
+                    <h5>User <em>{{user.username}}</em> transactions:</h5>
+                    <br>
+                    <h6>Account balance: {{ account_bal.account_bal }} {{ account_bal.currency }}</h6>
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        {% for transaction in past_transactions %}
+                            <tr>
+                                <td>You</td>
+                                <td>{{ transaction.type_of_transaction }}</td>
+                                <td>{{ transaction.amount }} {{ account_bal.currency }}</td>
+                                {% if transaction.type_of_transaction == "received" %}
+                                    <td>from</td>
+                                {% else %}
+                                    <td>to</td>
+                                {% endif %}
+                                <td>{{ transaction.other_user }}</td>
+                                <td>on</td>
+                                <td>{{ transaction.date }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </table>
+                {% else %}
+                    <h6>Account balance: {{ account_bal.account_bal }} {{ account_bal.currency }}</h6>
+                    <h5>There are no transactions for user: <em>{{user.username}}</em>.</h5>
+                {% endif %}
+            </div>
+        {% else %}
+
+        {% endif %}
+    </div>
+{% endblock %}
